@@ -3,7 +3,7 @@
 <%- include("../layout", { title, body: `
   <section class="filters">
     <form method="get" action="/books" class="row">
-      <input type="text" name="q" value="${filter.q}" placeholder="Search title or author" />
+      <input type="text" name="q" value="${escapeHtml(filter.q || "")}" placeholder="Search title or author" />
       <select name="status">
         <option value="">All statuses</option>
         <option value="to-read" ${filter.status === "to-read" ? "selected" : ""}>To Read</option>

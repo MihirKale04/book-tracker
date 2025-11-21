@@ -3,6 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import { dbHelpers } from "./database.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,7 +37,7 @@ function escapeHtml(str) {
 // Make escapeHtml available to all EJS templates
 app.locals.escapeHtml = escapeHtml;
 
-// Redirect root to books (we'll implement books soon)
+// Redirect root to books
 app.get("/", (req, res) => res.redirect("/books"));
 
 // Temporary route to verify EJS works
@@ -44,31 +45,148 @@ app.get("/hello", (req, res) => {
   res.render("hello", { name: "Book Tracker" });
 });
 
-// Placeholder books list route (will render a template)
+// Books list route with filtering
 app.get("/books", (req, res) => {
-  // Dummy data until we add the database
-  const books = [
-    { id: 1, title: "Demo Book", author: "Jane Doe", status: "to-read", rating: null },
-    { id: 2, title: "Another Demo", author: "John Smith", status: "reading", rating: 4 },
-  ];
-  res.render("books/index", { books, filter: { status: "", q: "" } });
+  const filter = {
+    status: req.query.status || "",
+    q: req.query.q || ""
+  };
+  const books = dbHelpers.getAllBooks(filter);
+  res.render("books/index", { books, filter });
 });
 
-// Individual book page route (placeholder for now)
+// Show form to add a new book
+app.get("/books/new", (req, res) => {
+  res.render("books/new", { book: null, errors: null });
+});
+
+// Create a new book
+app.post("/books", (req, res) => {
+  const { title, author, status, rating } = req.body;
+  const errors = {};
+
+  // Validation
+  if (!title || title.trim() === "") {
+    errors.title = "Title is required";
+  }
+  if (!author || author.trim() === "") {
+    errors.author = "Author is required";
+  }
+  if (rating && (isNaN(rating) || rating < 1 || rating > 5)) {
+    errors.rating = "Rating must be between 1 and 5";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.render("books/new", {
+      book: { title, author, status, rating },
+      errors
+    });
+  }
+
+  try {
+    const book = dbHelpers.createBook({
+      title: title.trim(),
+      author: author.trim(),
+      status: status || "to-read",
+      rating: rating ? parseInt(rating) : null
+    });
+    res.redirect(`/books/${book.id}`);
+  } catch (error) {
+    console.error("Error creating book:", error);
+    res.render("books/new", {
+      book: { title, author, status, rating },
+      errors: { general: "Failed to create book. Please try again." }
+    });
+  }
+});
+
+// Individual book page
 app.get("/books/:id", (req, res) => {
   const bookId = parseInt(req.params.id);
-  // Dummy data until we add the database
-  const books = [
-    { id: 1, title: "Demo Book", author: "Jane Doe", status: "to-read", rating: null },
-    { id: 2, title: "Another Demo", author: "John Smith", status: "reading", rating: 4 },
-  ];
-  const book = books.find(b => b.id === bookId);
+  const book = dbHelpers.getBookById(bookId);
   
   if (!book) {
     return res.status(404).render("404", { message: "Book not found" });
   }
   
   res.render("books/show", { book });
+});
+
+// Show form to edit a book
+app.get("/books/:id/edit", (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const book = dbHelpers.getBookById(bookId);
+  
+  if (!book) {
+    return res.status(404).render("404", { message: "Book not found" });
+  }
+  
+  res.render("books/edit", { book, errors: null });
+});
+
+// Update a book
+app.post("/books/:id", (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const book = dbHelpers.getBookById(bookId);
+  
+  if (!book) {
+    return res.status(404).render("404", { message: "Book not found" });
+  }
+
+  const { title, author, status, rating } = req.body;
+  const errors = {};
+
+  // Validation
+  if (!title || title.trim() === "") {
+    errors.title = "Title is required";
+  }
+  if (!author || author.trim() === "") {
+    errors.author = "Author is required";
+  }
+  if (rating && (isNaN(rating) || rating < 1 || rating > 5)) {
+    errors.rating = "Rating must be between 1 and 5";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.render("books/edit", {
+      book: { id: bookId, title, author, status, rating },
+      errors
+    });
+  }
+
+  try {
+    const updatedBook = dbHelpers.updateBook(bookId, {
+      title: title.trim(),
+      author: author.trim(),
+      status: status || "to-read",
+      rating: rating ? parseInt(rating) : null
+    });
+    res.redirect(`/books/${updatedBook.id}`);
+  } catch (error) {
+    console.error("Error updating book:", error);
+    res.render("books/edit", {
+      book: { id: bookId, title, author, status, rating },
+      errors: { general: "Failed to update book. Please try again." }
+    });
+  }
+});
+
+// Delete a book
+app.post("/books/:id/delete", (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const book = dbHelpers.getBookById(bookId);
+  
+  if (!book) {
+    return res.status(404).render("404", { message: "Book not found" });
+  }
+
+  try {
+    dbHelpers.deleteBook(bookId);
+    res.redirect("/books");
+  } catch (error) {
+    console.error("Error deleting book:", error);
+    res.redirect(`/books/${bookId}?error=delete_failed`);
+  }
 });
 
 // 404 fallback

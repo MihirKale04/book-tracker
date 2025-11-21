@@ -4,5 +4,7 @@ npm-debug.log*
 dist/
 .env
 data/
+*.db
+*.db-journal
 
 
