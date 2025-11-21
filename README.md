@@ -3,6 +3,7 @@
 # Book Tracker
 
 A minimal CRUD Book Tracker built with Node.js, Express, EJS, and SQLite.
+(Super simple for learning purposes :P)
 
 ## Prerequisites
 
