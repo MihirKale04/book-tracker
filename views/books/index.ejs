@@ -1,0 +1,49 @@
+// views/books/index.ejs
+<% const title = "Books"; %>
+<%- include("../layout", { title, body: `
+  <section class="filters">
+    <form method="get" action="/books" class="row">
+      <input type="text" name="q" value="${filter.q}" placeholder="Search title or author" />
+      <select name="status">
+        <option value="">All statuses</option>
+        <option value="to-read" ${filter.status === "to-read" ? "selected" : ""}>To Read</option>
+        <option value="reading" ${filter.status === "reading" ? "selected" : ""}>Reading</option>
+        <option value="read" ${filter.status === "read" ? "selected" : ""}>Read</option>
+      </select>
+      <button type="submit">Filter</button>
+    </form>
+  </section>
+
+  <section>
+    ${books.length === 0 ? `<p>No books found.</p>` : `
+      <ul class="list">
+        ${books.map(b => `
+          <li>
+            <div class="row">
+              <div>
+                <a href="/books/${b.id}"><strong>${escapeHtml(b.title)}</strong></a>
+                <div class="muted">by ${escapeHtml(b.author)}</div>
+              </div>
+              <div>
+                <span class="badge ${b.status}">${b.status}</span>
+                ${b.rating ? `<span class="rating">⭐ ${b.rating}/5</span>` : ""}
+              </div>
+            </div>
+          </li>
+        `).join("")}
+      </ul>
+    `}
+  </section>
+` }) %>
+
+<script>
+function escapeHtml(str) {
+  if (str == null) return "";
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+</script>

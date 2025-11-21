@@ -1,0 +1,15 @@
+<% const title = escapeHtml(book.title); %>
+<%- include("../layout", { title, body: `
+  <div class="row">
+    <div>
+      <h2>${escapeHtml(book.title)}</h2>
+      <p class="muted">by ${escapeHtml(book.author)}</p>
+      <p>
+        <span class="badge ${book.status}">${book.status}</span>
+        ${book.rating ? `<span class="rating">⭐ ${book.rating}/5</span>` : ""}
+      </p>
+    </div>
+  </div>
+  <p><a href="/books">← Back to All Books</a></p>
+` }) %>
+

@@ -1,0 +1,7 @@
+
+<% const title = "404 - Page Not Found"; %>
+<%- include("layout", { title, body: `
+  <h2>404 - Page Not Found</h2>
+  <p>${escapeHtml(message || "The page you're looking for doesn't exist.")}</p>
+  <p><a href="/books">← Back to Books</a></p>
+` }) %>

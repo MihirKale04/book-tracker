@@ -1,0 +1,7 @@
+// views/hello.ejs
+<% const title = "Hello"; %>
+<%- include("layout", { title, body: `
+  <h2>Hello, ${name}!</h2>
+  <p>If you can see this, EJS works.</p>
+` }) %>
+

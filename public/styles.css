@@ -1,0 +1,10 @@
+.list { list-style: none; padding: 0; }
+.list li { background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+.row { display: flex; gap: 12px; align-items: center; }
+.muted { color: var(--muted); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
+.badge.to-read { background: #263; }
+.badge.reading { background: #236; }
+.badge.read { background: #362; }
+.rating { margin-left: 8px; }
+.filters .row { gap: 8px; }
