@@ -19,6 +19,7 @@ const ratingError = errorsObj.rating ? `<span class="error">${escapeHtml(errorsO
         id="title" 
         name="title" 
         value="${escapeHtml(book.title || "")}" 
+        placeholder="Enter book title"
         required
         ${errorsObj.title ? `aria-invalid="true"` : ""}
       />
@@ -32,6 +33,7 @@ const ratingError = errorsObj.rating ? `<span class="error">${escapeHtml(errorsO
         id="author" 
         name="author" 
         value="${escapeHtml(book.author || "")}" 
+        placeholder="Enter author name"
         required
         ${errorsObj.author ? `aria-invalid="true"` : ""}
       />
@@ -41,9 +43,9 @@ const ratingError = errorsObj.rating ? `<span class="error">${escapeHtml(errorsO
     <div>
       <label for="status">Status</label>
       <select id="status" name="status">
-        <option value="to-read" ${book.status === "to-read" ? "selected" : ""}>To Read</option>
-        <option value="reading" ${book.status === "reading" ? "selected" : ""}>Reading</option>
-        <option value="read" ${book.status === "read" ? "selected" : ""}>Read</option>
+        <option value="to-read" ${book.status === "to-read" ? "selected" : ""}>📚 To Read</option>
+        <option value="reading" ${book.status === "reading" ? "selected" : ""}>📖 Reading</option>
+        <option value="read" ${book.status === "read" ? "selected" : ""}>✅ Read</option>
       </select>
     </div>
     
@@ -56,14 +58,15 @@ const ratingError = errorsObj.rating ? `<span class="error">${escapeHtml(errorsO
         min="1" 
         max="5" 
         value="${book.rating || ""}"
+        placeholder="Optional: 1-5"
         ${errorsObj.rating ? `aria-invalid="true"` : ""}
       />
       ${ratingError}
     </div>
     
     <div class="row">
-      <button type="submit">Update Book</button>
-      <a href="/books/${book.id}">Cancel</a>
+      <button type="submit">💾 Update Book</button>
+      <a href="/books/${book.id}" class="btn btn-secondary">Cancel</a>
     </div>
   </form>
 ` }) %>

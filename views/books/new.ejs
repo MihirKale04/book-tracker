@@ -21,6 +21,7 @@ const selectedStatus = bookValue.status || "to-read";
         id="title" 
         name="title" 
         value="${escapeHtml(bookValue.title || "")}" 
+        placeholder="Enter book title"
         required
         ${errorsObj.title ? `aria-invalid="true"` : ""}
       />
@@ -34,6 +35,7 @@ const selectedStatus = bookValue.status || "to-read";
         id="author" 
         name="author" 
         value="${escapeHtml(bookValue.author || "")}" 
+        placeholder="Enter author name"
         required
         ${errorsObj.author ? `aria-invalid="true"` : ""}
       />
@@ -43,9 +45,9 @@ const selectedStatus = bookValue.status || "to-read";
     <div>
       <label for="status">Status</label>
       <select id="status" name="status">
-        <option value="to-read" ${selectedStatus === "to-read" ? "selected" : ""}>To Read</option>
-        <option value="reading" ${selectedStatus === "reading" ? "selected" : ""}>Reading</option>
-        <option value="read" ${selectedStatus === "read" ? "selected" : ""}>Read</option>
+        <option value="to-read" ${selectedStatus === "to-read" ? "selected" : ""}>📚 To Read</option>
+        <option value="reading" ${selectedStatus === "reading" ? "selected" : ""}>📖 Reading</option>
+        <option value="read" ${selectedStatus === "read" ? "selected" : ""}>✅ Read</option>
       </select>
     </div>
     
@@ -58,14 +60,15 @@ const selectedStatus = bookValue.status || "to-read";
         min="1" 
         max="5" 
         value="${bookValue.rating || ""}"
+        placeholder="Optional: 1-5"
         ${errorsObj.rating ? `aria-invalid="true"` : ""}
       />
       ${ratingError}
     </div>
     
     <div class="row">
-      <button type="submit">Add Book</button>
-      <a href="/books">Cancel</a>
+      <button type="submit">➕ Add Book</button>
+      <a href="/books" class="btn btn-secondary">Cancel</a>
     </div>
   </form>
 ` }) %>

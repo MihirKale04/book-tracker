@@ -1,22 +1,20 @@
 <% const title = escapeHtml(book.title); %>
 <%- include("../layout", { title, body: `
-  <div class="row">
-    <div>
-      <h2>${escapeHtml(book.title)}</h2>
-      <p class="muted">by ${escapeHtml(book.author)}</p>
-      <p>
-        <span class="badge ${book.status}">${book.status}</span>
-        ${book.rating ? `<span class="rating">⭐ ${book.rating}/5</span>` : ""}
-      </p>
+  <div class="book-detail">
+    <h2>${escapeHtml(book.title)}</h2>
+    <p class="author muted">by ${escapeHtml(book.author)}</p>
+    <div class="meta">
+      <span class="badge ${book.status}">${book.status}</span>
+      ${book.rating ? `<span class="rating">⭐ ${book.rating}/5</span>` : `<span class="muted">No rating yet</span>`}
     </div>
   </div>
   
-  <div class="row" style="margin-top: 1rem; gap: 0.5rem;">
-    <a href="/books/${book.id}/edit">Edit</a>
+  <div class="book-actions">
+    <a href="/books/${book.id}/edit" class="btn btn-primary">✏️ Edit</a>
     <form method="post" action="/books/${book.id}/delete" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this book?');">
-      <button type="submit" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px;">Delete</button>
+      <button type="submit" class="btn btn-danger">🗑️ Delete</button>
     </form>
-    <a href="/books">← Back to All Books</a>
+    <a href="/books" class="btn btn-secondary">← Back to All Books</a>
   </div>
 ` }) %>
 
